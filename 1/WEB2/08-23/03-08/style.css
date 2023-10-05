@@ -1,0 +1,8 @@
+.desc {
+    color: blue;
+}
+.borda {
+    border: 2px solid grey;
+    border-radius: 5px;
+    display: inline-block;
+}

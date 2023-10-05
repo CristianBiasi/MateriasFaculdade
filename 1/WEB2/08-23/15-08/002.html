@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Exemplo de Formulário:</h1>
+    Primeiro Número
+    <input type="number" id="txtn1"/>
+    <br/>
+    Segundo Número:
+    <input type="number" id="txtn2"/>
+    <br/>
+    <input type="button" value="ok" onclick="calcular()"/>
+    <input type="button" value="limpar" onclick="limpar()"/> <!-- Corrigido o onclick aqui -->
+    <br/>
+    <div id="resp"></div>
+
+    <script>
+        function calcular() {
+            //pega os elementos do html
+            var textn1 = document.getElementById("txtn1");
+            var textn2 = document.getElementById("txtn2");
+            var resp = document.getElementById("resp");
+            //pega os valores digitados pelo usuário
+            var n1 = parseInt(textn1.value); // Corrigido para textn1.value
+            var n2 = parseInt(textn2.value); // Corrigido para textn2.value
+            //faz o cálculo
+            var soma = n1 + n2;
+            resp.innerHTML = "Soma: " + soma; // Corrigido a forma de mostrar o resultado
+        }
+        function limpar() {
+            //pega os elementos do html
+            var txtn1 = document.getElementById("txtn1");
+            var txtn2 = document.getElementById("txtn2"); // Corrigido o nome da variável
+            var resp = document.getElementById("resp");
+            //limpa os campos
+            txtn1.value = ""; // Corrigido para txtn1
+            txtn2.value = ""; // Corrigido para txtn2
+            resp.innerHTML = "";
+            //coloca o foco no input
+            txtn1.focus();
+
+        }
+
+    </script>
+       
+</body>
+</html>

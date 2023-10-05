@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Minha Loja</h1>
+    <p>Iphone</p>
+    <p>Apple</p>
+    <p>Valor:
+        <span id="valor" style="font-weight: bold;">
+                $ 1.000,00
+        </span>
+
+    </p>
+</body>
+<script>
+    var valor = 1000;
+    var reais = valor * 5.4;
+    //pega a tag desejada pela ID
+    var tag = document.getElementById('valor');
+    tag.innerHTML = reais.toFixed(2);
+</script>
+</html>
