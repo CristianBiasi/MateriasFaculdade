@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Categoria de Atleta</title>
+</head>
+<body>
+  <h1>Categoria de Atleta</h1>
+  <form action="" method="post">
+    <label for="nome">Nome do atleta:</label>
+    <input type="text" name="nome" id="nome">
+    <label for="faixa-etaria">Faixa etária:</label>
+    <select name="faixa-etaria" id="faixa-etaria">
+      <option value="abaixo-de-14-anos">Abaixo de 14 anos</option>
+      <option value="entre-14-e-15-anos">Entre 14 e 15 anos</option>
+      <option value="entre-16-e-17-anos">Entre 16 e 17 anos</option>
+      <option value="de-18-a-20-anos">De 18 a 20 anos</option>
+      <option value="acima-de-20-anos">Acima de 20 anos</option>
+    </select>
+    <button type="submit">Enviar</button>
+  </form>
+  <script>
+    function calcularCategoria(faixaEtaria) {
+  switch (faixaEtaria) {
+    case "abaixo-de-14-anos":
+      return "mirim";
+    case "entre-14-e-15-anos":
+      return "infantil";
+    case "entre-16-e-17-anos":
+      return "juvenil";
+    case "de-18-a-20-anos":
+      return "juniores";
+    case "acima-de-20-anos":
+      return "profissional";
+    default:
+      return "Categoria não encontrada";
+  }
+}
+
+const form = document.querySelector("form");
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const nome = document.querySelector("#nome").value;
+  const faixaEtaria = document.querySelector("#faixa-etaria").value;
+
+  const categoria = calcularCategoria(faixaEtaria);
+
+  const mensagem = `Nome: ${nome} | Categoria: ${categoria}`;
+  alert(mensagem);
+});
+
+  </script>
+</body>
+</html>
