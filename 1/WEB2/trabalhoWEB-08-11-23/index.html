@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Receitas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            position: relative;
+        }
+
+        button.delete {
+            background-color: #f44336;
+        }
+
+        button.delete:hover {
+            background-color: #d32f2f;
+        }
+
+        .empty-message {
+            color: #888;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gerenciador de Receitas</h1>
+
+    <form id="recipeForm">
+        <label for="recipeName">Nome da Receita:</label>
+        <input type="text" id="recipeName" required>
+
+        <label for="ingredients">Ingredientes:</label>
+        <textarea id="ingredients" required></textarea>
+
+        <button type="button" onclick="addRecipe()">Adicionar Receita</button>
+    </form>
+
+    <h2>Lista de Receitas</h2>
+    <ul id="recipeList">
+        <p class="empty-message">Nenhuma receita cadastrada.</p>
+    </ul>
+
+    <script>
+        function addRecipe() {
+            var name = document.getElementById('recipeName').value;
+            var ingredients = document.getElementById('ingredients').value;
+
+            if (name && ingredients) {
+                var recipe = {
+                    name: name,
+                    ingredients: ingredients
+                };
+
+                var recipes = JSON.parse(localStorage.getItem('recipes')) || [];
+                recipes.push(recipe);
+                localStorage.setItem('recipes', JSON.stringify(recipes));
+
+                displayRecipes();
+            } else {
+                alert('Por favor, preencha todos os campos.');
+            }
+        }
+
+        function deleteRecipe(index) {
+            var recipes = JSON.parse(localStorage.getItem('recipes'));
+            recipes.splice(index, 1);
+            localStorage.setItem('recipes', JSON.stringify(recipes));
+
+            displayRecipes();
+        }
+
+        function displayRecipes() {
+            var recipes = JSON.parse(localStorage.getItem('recipes')) || [];
+            var recipeList = document.getElementById('recipeList');
+            recipeList.innerHTML = '';
+
+            if (recipes.length === 0) {
+                var emptyMessage = document.createElement('p');
+                emptyMessage.classList.add('empty-message');
+                emptyMessage.textContent = 'Nenhuma receita cadastrada.';
+                recipeList.appendChild(emptyMessage);
+            } else {
+                recipes.forEach(function (recipe, index) {
+                    var listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        <strong>${recipe.name}</strong>
+                        <br>
+                        <span>${recipe.ingredients}</span>
+                        <button class="delete" onclick="deleteRecipe(${index})">Excluir</button>
+                    `;
+                    recipeList.appendChild(listItem);
+                });
+            }
+        }
+
+        displayRecipes();  // Mostra as receitas ao carregar a página
+    </script>
+</body>
+</html>
