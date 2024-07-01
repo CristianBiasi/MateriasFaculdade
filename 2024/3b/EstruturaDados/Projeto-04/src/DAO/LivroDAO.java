@@ -1,4 +1,5 @@
 package DAO;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,15 +18,23 @@ public class LivroDAO {
     }
 
     public void inserirLivro(Livro livro) {
-        String sql = "INSERT INTO livros (idlivro, titulo, autor, ano) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO livros (titulo, autor, ano) VALUES (?, ?, ?)";
         try (Connection connection = conexao.getConexao();
-             PreparedStatement pst = connection.prepareStatement(sql)) {
-            pst.setInt(1, livro.getId());
-            pst.setString(2, livro.getTitulo());
-            pst.setString(3, livro.getAutor());
-            pst.setString(4, livro.getAno());
-            pst.executeUpdate();
-            System.out.println("Livro inserido com sucesso: " + livro);
+             PreparedStatement pst = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            pst.setString(1, livro.getTitulo());
+            pst.setString(2, livro.getAutor());
+            pst.setString(3, livro.getAno());
+            int rowsAffected = pst.executeUpdate();
+            if (rowsAffected > 0) {
+                try (ResultSet generatedKeys = pst.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        livro.setId(generatedKeys.getInt(1));
+                    }
+                }
+                System.out.println("Livro inserido com sucesso: " + livro);
+            } else {
+                System.out.println("Falha ao inserir o livro: " + livro);
+            }
         } catch (SQLException e) {
             System.out.println("Erro ao inserir livro: " + e.getMessage());
         }
@@ -37,12 +46,13 @@ public class LivroDAO {
         try (Connection connection = conexao.getConexao();
              PreparedStatement pst = connection.prepareStatement(sql)) {
             pst.setInt(1, id);
-            ResultSet rs = pst.executeQuery();
-            if (rs.next()) {
-                livro = new Livro(rs.getInt("idlivro"),
-                        rs.getString("titulo"),
-                        rs.getString("autor"),
-                        rs.getString("ano"));
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    livro = new Livro(rs.getInt("idlivro"),
+                            rs.getString("titulo"),
+                            rs.getString("autor"),
+                            rs.getString("ano"));
+                }
             }
         } catch (SQLException e) {
             System.out.println("Erro ao buscar livro: " + e.getMessage());
@@ -56,12 +66,11 @@ public class LivroDAO {
         try (Connection connection = conexao.getConexao();
              PreparedStatement pst = connection.prepareStatement(sql);
              ResultSet rs = pst.executeQuery()) {
-
             while (rs.next()) {
                 Livro livro = new Livro(rs.getInt("idlivro"),
-                                        rs.getString("titulo"),
-                                        rs.getString("autor"),
-                                        rs.getString("ano"));
+                        rs.getString("titulo"),
+                        rs.getString("autor"),
+                        rs.getString("ano"));
                 livros.add(livro);
             }
         } catch (SQLException e) {
@@ -69,7 +78,6 @@ public class LivroDAO {
         }
         return livros;
     }
-    
 
     public void removerLivroPorId(int id) {
         String sql = "DELETE FROM livros WHERE idlivro = ?";
@@ -87,4 +95,3 @@ public class LivroDAO {
         }
     }
 }
-

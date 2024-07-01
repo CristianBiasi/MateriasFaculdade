@@ -1,4 +1,5 @@
 package DAO;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,38 +20,38 @@ public class EmprestimoDAO {
     }
 
     public void realizarEmprestimo(int idlivro, int idusuario) {
-    String sqlInsert = "INSERT INTO emprestimos (idlivro, idusuario, devolvido) VALUES (?, ?, false)";
-    String sqlSelect = "SELECT titulo FROM livros WHERE idlivro = ?";
-    String nomeLivro = "";
+        String sqlInsert = "INSERT INTO emprestimos (idlivro, idusuario, devolvido) VALUES (?, ?, false)";
+        String sqlSelect = "SELECT titulo FROM livros WHERE idlivro = ?";
+        String nomeLivro = "";
 
-    try (Connection connection = conexao.getConexao();
-         PreparedStatement pstInsert = connection.prepareStatement(sqlInsert);
-         PreparedStatement pstSelect = connection.prepareStatement(sqlSelect)) {
+        try (Connection connection = conexao.getConexao();
+             PreparedStatement pstInsert = connection.prepareStatement(sqlInsert);
+             PreparedStatement pstSelect = connection.prepareStatement(sqlSelect)) {
 
-        // Realiza o empréstimo
-        pstInsert.setInt(1, idlivro);
-        pstInsert.setInt(2, idusuario);
-        pstInsert.executeUpdate();
-        System.out.println("Empréstimo realizado com sucesso.");
+            // Realiza o empréstimo
+            pstInsert.setInt(1, idlivro);
+            pstInsert.setInt(2, idusuario);
+            pstInsert.executeUpdate();
+            System.out.println("Empréstimo realizado com sucesso.");
 
-        // Obtém o nome do livro emprestado
-        pstSelect.setInt(1, idlivro);
-        ResultSet rs = pstSelect.executeQuery();
-        if (rs.next()) {
-            nomeLivro = rs.getString("titulo");
-        }
+            // Obtém o nome do livro emprestado
+            pstSelect.setInt(1, idlivro);
+            ResultSet rs = pstSelect.executeQuery();
+            if (rs.next()) {
+                nomeLivro = rs.getString("titulo");
+            }
 
-        // Obtém o nome do usuário para quem foi emprestado
-        UsuarioDAO usuarioDAO = new UsuarioDAO();
-        Usuario usuario = usuarioDAO.buscarUsuarioPorId(idusuario);
-        String nomeUsuario = usuario != null ? usuario.getNome() : "Usuário não encontrado";
+            // Obtém o nome do usuário para quem foi emprestado
+            UsuarioDAO usuarioDAO = new UsuarioDAO();
+            Usuario usuario = usuarioDAO.buscarUsuarioPorId(idusuario);
+            String nomeUsuario = usuario != null ? usuario.getNome() : "Usuário não encontrado";
 
-        // Mostra informações
-        System.out.println("Livro emprestado: " + nomeLivro);
-        System.out.println("Emprestado para: " + nomeUsuario);
+            // Mostra informações
+            System.out.println("Livro emprestado: " + nomeLivro);
+            System.out.println("Emprestado para: " + nomeUsuario);
 
-    } catch (SQLException e) {
-        System.out.println("Erro ao realizar empréstimo: " + e.getMessage());
+        } catch (SQLException e) {
+            System.out.println("Erro ao realizar empréstimo: " + e.getMessage());
         }
     }
 
@@ -58,22 +59,21 @@ public class EmprestimoDAO {
         String sql = "UPDATE emprestimos SET devolvido = true WHERE idemprestimos = ?";
         try (Connection connection = conexao.getConexao();
              PreparedStatement pst = connection.prepareStatement(sql)) {
-            
+
             pst.setInt(1, idemprestimos);
             int rowsAffected = pst.executeUpdate();
-            
+
             if (rowsAffected > 0) {
                 System.out.println("Devolução realizada com sucesso.");
             } else {
                 System.out.println("Empréstimo não encontrado.");
             }
-    
+
         } catch (SQLException e) {
             System.out.println("Erro ao realizar devolução: " + e.getMessage());
         }
     }
-    
-    
+
     public List<Emprestimo> listarEmprestimos() {
         List<Emprestimo> emprestimos = new LinkedList<>();
         String sql = "SELECT * FROM emprestimos";
@@ -81,7 +81,7 @@ public class EmprestimoDAO {
              PreparedStatement pst = connection.prepareStatement(sql);
              ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
-                Emprestimo emprestimo = new Emprestimo(rs.getInt("id"),
+                Emprestimo emprestimo = new Emprestimo(rs.getInt("idemprestimos"),
                         rs.getInt("idlivro"),
                         rs.getInt("idusuario"),
                         rs.getBoolean("devolvido"));
@@ -89,7 +89,7 @@ public class EmprestimoDAO {
             }
         } catch (SQLException e) {
             System.out.println("Erro ao listar empréstimos: " + e.getMessage());
-        } 
+        }
         return emprestimos;
     }
 

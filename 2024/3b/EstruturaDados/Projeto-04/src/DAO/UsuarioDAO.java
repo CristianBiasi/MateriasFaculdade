@@ -1,4 +1,5 @@
 package DAO;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,12 +18,11 @@ public class UsuarioDAO {
     }
 
     public void inserirUsuario(Usuario usuario) {
-        String sql = "INSERT INTO usuarios (idusuario, nome, email) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO usuarios (nome, email) VALUES (?, ?)";
         try (Connection connection = conexao.getConexao();
              PreparedStatement pst = connection.prepareStatement(sql)) {
-            pst.setInt(1, usuario.getId());
-            pst.setString(2, usuario.getNome());
-            pst.setString(3, usuario.getEmail());
+            pst.setString(1, usuario.getNome());
+            pst.setString(2, usuario.getEmail());
             pst.executeUpdate();
             System.out.println("Usuário inserido com sucesso: " + usuario);
         } catch (SQLException e) {
@@ -82,4 +82,3 @@ public class UsuarioDAO {
         }
     }
 }
-
